@@ -5,7 +5,7 @@ I am a BaselineOf.
 Class {
 	#name : #BaselineOfNeoCSV,
 	#superclass : #BaselineOf,
-	#category : 'BaselineOfNeoCSV'
+	#category : #BaselineOfNeoCSV
 }
 
 { #category : #baselines }
@@ -13,7 +13,12 @@ BaselineOfNeoCSV >> baseline: spec [
 	<baseline>
 	spec
 		for: #common
-		do: [ spec
+		do: [ 
+			spec 
+				baseline: 'Magritte' with: [ spec repository: 'github://magritte-metamodel/Magritte' ];
+				package: 'Neo-CSV-Magritte' with: [ spec requires: #('Neo-CSV-Core' 'Magritte') ].
+				
+			spec
 				package: 'Neo-CSV-Core';
 				package: 'Neo-CSV-Tests' with: [ spec requires: #('Neo-CSV-Core') ];
 				group: 'default' with: #('core' 'tests');

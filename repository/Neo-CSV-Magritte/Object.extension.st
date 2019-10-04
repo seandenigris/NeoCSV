@@ -34,12 +34,19 @@ Object class >> maFromCSVStream: aStream [
 
 { #category : #'*Neo-CSV-Magritte' }
 Object class >> maGenerateFieldsFromCSVHeaders [
-	"Given a class-side `#headers` message returning a tab-separated string (e.g. pasted from MS Excel), generate a field (i.e. constructor and accessors) for each token"
+	"Given a class-side `#headers` message returning a whitespace-separated string (e.g. pasted from MS Excel), generate a field (i.e. constructor and accessors) for each token"
 	
-	| headers usedHeaders |
-	headers := Character tab split: self headers.
-	usedHeaders := headers reject: #isEmpty.
-	usedHeaders do: [ :h | self maAddField: h asCamelCase uncapitalized asSymbol ]
+	| headers |
+	headers := self headers findTokens: Character separators.
+	headers do: [ :h | 
+		| fieldName |
+		fieldName := UIManager default 
+			request: 'Field Name for "', h, '" Column' 
+			initialAnswer: h asCamelCase uncapitalized.
+		fieldName ifNotNil: [ 
+			self 
+				maAddField: fieldName asSymbol 
+				with: [ :d | d csvFieldName: h ] ] ]
 ]
 
 { #category : #'*Neo-CSV-Magritte' }
